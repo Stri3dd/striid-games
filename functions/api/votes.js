@@ -24,4 +24,3 @@ export async function onRequest({request,env,waitUntil}){
   waitUntil(env.COMMUNITY_DB.prepare('DELETE FROM vote_rate_limits WHERE expires_at < ?').bind(now).run());return reply(request,await snapshot(env.COMMUNITY_DB,id),200,id);
  }catch{return reply(request,{error:'Voting is temporarily unavailable'},503)}
 }
-

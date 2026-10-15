@@ -68,4 +68,3 @@ out=sorted(games.values(),key=lambda x:x['name'].casefold())
 (ROOT/'config/catalogue.json').write_text(json.dumps(out,ensure_ascii=False,separators=(',',':')),encoding='utf8')
 report={'importedAt':'2026-10-15','source':'https://sites.google.com/view/classroom6x/','sourceListings':sum(g['id'].startswith('c6x-') for g in out),'retainedLegacy':sum(g['mode']=='legacy' for g in out),'total':len(out),'thumbnails':sum('image' in g for g in out),'note':'Listings imported from public navigation. Game payloads resolved on demand; availability depends on source hosting. Counts do not imply every game has been tested.'}
 (ROOT/'config/import-report.json').write_text(json.dumps(report,indent=2),encoding='utf8');print(json.dumps(report))
-

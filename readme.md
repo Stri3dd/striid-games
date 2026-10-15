@@ -33,7 +33,7 @@ Classroom game documents are resolved on demand from known source URLs. They are
 
 ## Eaglercraft
 
-The supplied ZIP contains a client identifying itself as **26.3**, hosted at `/eagler/`. The original 78,037,659 bytes are split across four files below Cloudflare's per-file limit and reassembled at runtime. The loader verifies SHA-256 for each part. `.gitattributes` prevents newline conversion of those files.
+The supplied ZIP contains a client identifying itself as **26.3**, hosted at `/eagler/`. The original 78,037,659 bytes are split across four files below Cloudflare's per-file limit and streamed through a same-origin client endpoint. Automated packaging checks verify SHA-256 for each part and the complete document. `.gitattributes` prevents newline conversion of those files.
 
 Repackage with `python tools/package_eagler.py path/to/eaglercraft26-3.zip`. The supplied client is otherwise unchanged. Use a modern desktop browser with keyboard and mouse; successful download does not guarantee gameplay on every device.
 
