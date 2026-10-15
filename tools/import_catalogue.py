@@ -57,13 +57,20 @@ class Images(HTMLParser):
         a=dict(attrs)
         if tag=='img' and a.get('alt') and a.get('src','').startswith('https://sites.google.com/sitesv-images-rt/'):
             label=re.sub(r'\b(unblocked|games?|online)\b','',a['alt'],flags=re.I)
-            self.images[key(label)]=a['src'].replace('=w1280','=w400')
+            self.images[key(label)]=a['src']
 p=Images();p.feed((ROOT/'.cache/classroom.html').read_text(encoding='utf8'))
 for name in ['8-ball-pool','1v1-lol']:
     path=ROOT/'.cache'/f'{name}.html'
     if path.exists():p.feed(path.read_text(encoding='utf8'))
 for k,g in games.items():
     if k in p.images:g['image']=p.images[k]
+# Preserve cached local icons when rebuilding the catalogue.
+icon_file=ROOT/'config/icon-sources.json'
+icons=json.loads(icon_file.read_text(encoding='utf8')) if icon_file.exists() else {}
+for g in games.values():
+    icon=icons.get(g['id'])
+    if icon and (ROOT/icon['path'].lstrip('/')).is_file():
+        g['image']=icon['path'];g['iconType']=icon['kind']
 out=sorted(games.values(),key=lambda x:x['name'].casefold())
 (ROOT/'config/catalogue.json').write_text(json.dumps(out,ensure_ascii=False,separators=(',',':')),encoding='utf8')
 report={'importedAt':'2026-10-15','source':'https://sites.google.com/view/classroom6x/','sourceListings':sum(g['id'].startswith('c6x-') for g in out),'retainedLegacy':sum(g['mode']=='legacy' for g in out),'total':len(out),'thumbnails':sum('image' in g for g in out),'note':'Listings imported from public navigation. Game payloads resolved on demand; availability depends on source hosting. Counts do not imply every game has been tested.'}

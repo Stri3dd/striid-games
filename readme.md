@@ -29,7 +29,9 @@ If D1 is absent or unavailable, the site reports that voting is not connected. N
 
 Classroom game documents are resolved on demand from known source URLs. They are served in isolated frames without same-origin, pop-up, or top-navigation privileges. Third-party games cannot access portal cookies or local storage. Provider changes, Flash compatibility, offline services and sandbox restrictions can prevent some games from working. Each listing retains a source link. Catalogue inclusion does not mean every game has been tested.
 
-**8 Ball Pool** uses an original local two-player game at `/games/pool/`: ball physics, aiming, power, pockets, group assignment and simplified 8-ball rules. It has no online matchmaking.
+**8 Ball Pool** uses an original local two-player game at `/games/pool/`: ball physics, aiming, power, pockets, group assignment and simplified 8-ball rules. Aim, hold on the table or cue, pull backwards along the cue and release to shoot. Pull distance controls power; a short tap only sets aim. Mouse and touch use pointer capture, and keyboard/button controls remain available below the table. It has no online matchmaking.
+
+Each game has a local icon: 2,303 artwork thumbnails and 26 individual title icons. Artwork sources are recorded in `config/icon-sources.json`, including Classroom 6x, Parcoil and [GN-Math covers](https://github.com/gn-math/covers). Run `python tools/import_icons.py` with Pillow installed to refresh icons. The catalogue importer preserves cached icons.
 
 ## Eaglercraft
 
