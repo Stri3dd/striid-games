@@ -5,7 +5,7 @@
   Cross-Origin-Embedder-Policy: credentialless
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 /config/catalogue.json
-  Cache-Control: public, max-age=300
+  Cache-Control: public, max-age=0, must-revalidate
 /games/eaglercraft/*.part
   Cache-Control: public, max-age=86400
   Content-Type: application/octet-stream
