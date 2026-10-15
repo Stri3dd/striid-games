@@ -1,0 +1,1 @@
+{"name":"striid-games","private":true,"type":"module","scripts":{"dev":"node tools/serve.mjs","test":"node --test tests/*.test.mjs","build":"node tools/build.mjs"},"devDependencies":{"wrangler":"4.151.0"}}

@@ -1,67 +1,42 @@
-<div align=center> 
-<img title="a title" alt="Alt text" src="nativess.png" height="350" /></div>
+# STRIID Games
 
-<h1 align=center> Native. Unblocked games site template </h1>
+Responsive browser games portal for **games.striid.uk**. Dark game wall, local SVG icons, genres, search, personal favourites, recent games, random selection, and community rankings backed by Cloudflare D1.
 
-### Introduction:
+## Hosting
 
-This repository provides a simple template for creating unblocked games sites. The template includes basic HTML, CSS, and JavaScript files that you can customize according to your preferences.
+The existing `striid-games` Cloudflare Worker is linked to this repository's `main` branch. Its deploy command is `npx wrangler deploy`. `wrangler.jsonc` runs `npm run build` and uploads `dist/`; `worker.mjs` handles `/api/*`. The custom domain is already configured in Cloudflare.
 
-### Getting Started:
+```
+npm ci
+npm test
+npm run build
+npx wrangler deploy --dry-run
+```
 
-To get started, follow these steps:
+Local preview: Node 22.13+ and `npm run dev`, then http://127.0.0.1:4173. Preview likes use a separate local SQLite database in ignored `.cache/`; they never appear in production rankings.
 
-1. **Fork the Repository:**
-   Fork this repository by clicking on the "Fork" button in the top-right corner of this page. This will create a copy of the repository in your GitHub account.
+## Community votes
 
-2. **Set Up GitHub Pages:**
-   After forking the repository, go to the "Settings" tab of your forked repository. Scroll down to the "GitHub Pages" section and select the branch you want to use for GitHub Pages (typically, you would choose the "main" branch). GitHub Pages will now host your site.
+Create D1 database `striid-games-community`. Declare it in `wrangler.jsonc` under `d1_databases` with binding `COMMUNITY_DB`, database_name, and the real database_id. Redeploy. Tables initialize on the first API request; equivalent schema is in `migrations/0001_votes.sql`.
 
-3. **Edit `main.js`:**
-   Open `main.js` located in `config/main.js` with a text editor. In this file, you can change the `sitename` variable to your desired name. This variable controls both the tab title and the text displayed on the page. For example:
+Likes use a browser cookie and shared counts, with one active like per browser/game, idempotent writes, known-game validation, same-origin POST checks and a basic hourly rate limit. Raw IP addresses are not stored by this application. Anonymous likes are not verified unique-human votes. Optional `VOTE_SALT` may be set as a Worker secret.
 
-   ```javascript
-   var sitename = "Your Site Name";
-   ```
+If D1 is absent or unavailable, the site reports that voting is not connected. No fabricated rankings are shown. Personal favourites remain available.
 
-   Changing this variable will update the title of the tab and certain text elements on the page accordingly.
+## Catalogue
 
-4. **Customize CSS:**
-   Open `main.css` located in `config/main.css`. Here, you can customize the site's appearance by changing variables such as background color, text color, and accent color:
+`config/catalogue.json` contains 2,329 entries: 2,132 distinct Classroom 6x listings, 196 non-overlapping existing entries, and the owner-supplied Eaglercraft build. Imported 15 October 2026. Genre classification is heuristic and editable.
 
-   ```css
-   :root {
-     --background-color: #41444e; /* Change this to your preferred background color */
-     --text-color: white; /* Change this to your preferred text color */
-     --accent-color: #404040; /* Change this to your preferred accent color */
-   }
-   ```
+Classroom game documents are resolved on demand from known source URLs. They are served in isolated frames without same-origin, pop-up, or top-navigation privileges. Third-party games cannot access portal cookies or local storage. Provider changes, Flash compatibility, offline services and sandbox restrictions can prevent some games from working. Each listing retains a source link. Catalogue inclusion does not mean every game has been tested.
 
-5. **Custom JavaScript and CSS:**
-   If you want to add custom JavaScript or CSS, you can use `custom.js` and `custom.css` located in the `config` directory. Simply add your custom code to these files.
+**8 Ball Pool** uses an original local two-player game at `/games/pool/`: ball physics, aiming, power, pockets, group assignment and simplified 8-ball rules. It has no online matchmaking.
 
-6. **Save Changes:**
-   Save all your changes.
+## Eaglercraft
 
-7. **Deploy Your Site:**
-   Your site is now live on GitHub Pages! You can access it at `https://<your-github-username>.github.io/<repository-name>`.
+The supplied ZIP contains a client identifying itself as **26.3**, hosted at `/eagler/`. The original 78,037,659 bytes are split across four files below Cloudflare's per-file limit and reassembled at runtime. The loader verifies SHA-256 for each part. `.gitattributes` prevents newline conversion of those files.
 
-### Usage:
+Repackage with `python tools/package_eagler.py path/to/eaglercraft26-3.zip`. The supplied client is otherwise unchanged. Use a modern desktop browser with keyboard and mouse; successful download does not guarantee gameplay on every device.
 
-After customizing the template according to your preferences, your unblocked games site is ready for use. Users can navigate through the site, play games, and enjoy the content.
+## Credits
 
-### Contributing:
-
-If you have any suggestions for improvements or would like to contribute to this template, feel free to submit a pull request or open an issue.
-
-### License:
-
-This project is licensed under the [MIT License](LICENSE).
-
-### Disclaimer:
-
-do not remove the "a site by parcoil network" text at the bottom of the site, as doing so violates our Terms of Service.
-
----
-
-Feel free to modify this README according to your specific requirements. If you have any further questions or need assistance, don't hesitate to reach out. Happy coding!
+Original template: **a site by [Parcoil Network](https://parcoil.dev)**. Catalogue: [Classroom 6x](https://sites.google.com/view/classroom6x/). Game names, artwork, assets and trademarks belong to their owners. STRIID is independent of those providers and of Mojang/Microsoft. The original template requested retaining its credit, which remains in the footer and about page.

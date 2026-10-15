@@ -1,72 +1,12 @@
-// This changes the title of your site
-
-var sitename = "Bens Unblocked Games"; // Change this to change the name of your website.
-var subtext = "v1.2"; // set the subtext
-
-// more settings in main.css
-
-
-
-// END CONFIG
-// DO NOT MODIFY IF YOU DO NOT KNOW WHAT YOUR DOING!
-
-import "/./config/custom.js";
-
-var serverUrl1 = "https://parcoil-assets.onrender.com";
-var currentPageTitle = document.title;
-document.title = `${currentPageTitle} | ${sitename}`;
-let gamesData = []; 
-
-function displayFilteredGames(filteredGames) {
-  const gamesContainer = document.getElementById("gamesContainer");
-  gamesContainer.innerHTML = ""; 
-
-  filteredGames.forEach((game) => {
-    const gameDiv = document.createElement("div");
-    gameDiv.classList.add("game");
-
-    const gameImage = document.createElement("img");
-    gameImage.src = `${serverUrl1}/${game.url}/${game.image}`;
-    gameImage.alt = game.name;
-    gameImage.onclick = () => {
-      window.location.href = `play.html?gameurl=${game.url}/`;
-    };
-
-    const gameName = document.createElement("p");
-    gameName.textContent = game.name;
-
-    gameDiv.appendChild(gameImage);
-    gameDiv.appendChild(gameName);
-    gamesContainer.appendChild(gameDiv);
-  });
-}
-
-
-function handleSearchInput() {
-  const searchInputValue = document
-    .getElementById("searchInput")
-    .value.toLowerCase();
-  const filteredGames = gamesData.filter((game) =>
-    game.name.toLowerCase().includes(searchInputValue)
-  );
-  displayFilteredGames(filteredGames);
-}
-
-
-fetch("./config/games.json") 
-  .then((response) => response.json())
-  .then((data) => {
-    gamesData = data;
-    displayFilteredGames(data); 
-  })
-  .catch((error) => console.error("Error fetching games:", error));
-
-
-document
-  .getElementById("searchInput")
-  .addEventListener("input", handleSearchInput);
-
-document.getElementById("title").innerHTML = `${sitename}`;
-
-document.getElementById("subtitle").innerHTML = `${subtext}`
-
+import {icon,hydrateIcons,genres,genreIcons,readStore,writeStore,gameCard,loadCatalogue,toast} from './ui.js';
+hydrateIcons();const $=id=>document.getElementById(id),pageSize=60;let games=[],votes={},active='All',query='',limit=pageSize,order='az';
+const params=new URLSearchParams(location.search);if(genres.includes(params.get('genre')))active=params.get('genre');
+function navigate(value){active=value;limit=pageSize;renderNavigation();renderCollection();const home=value==='All'&&!query;$('communitySection').hidden=!home;$('spotlightSection').hidden=!home;$('recentSection').hidden=!home||!readStore('recent',[]).length;$('sidebar').classList.remove('open');$('mobileMenu').setAttribute('aria-expanded','false');if(value!=='All')$('collection').scrollIntoView({block:'start'})}
+function renderNavigation(){const entries=[['All','grid','All games'],['Favourites','heart','Your favourites'],['Recent','history','Recently played'],...genres.map(g=>[g,genreIcons[g],g])];$('navigation').replaceChildren();for(const [value,symbol,label]of entries){const b=document.createElement('button');b.className='nav-item';b.innerHTML=icon(symbol);const text=document.createElement('span');text.textContent=label;b.append(text);if(value===active)b.classList.add('active');b.setAttribute('aria-pressed',String(value===active));if(genres.includes(value)){const count=document.createElement('small');count.textContent=games.filter(g=>g.genres.includes(value)).length;b.append(count)}b.addEventListener('click',()=>navigate(value));$('navigation').append(b)}$('genreChips').replaceChildren();for(const value of ['All',...genres]){const b=document.createElement('button');b.className='genre-chip';b.innerHTML=icon(genreIcons[value]||'grid');b.append(document.createTextNode(value==='All'?'All games':value));b.setAttribute('aria-pressed',String(value===active));b.addEventListener('click',()=>navigate(value));$('genreChips').append(b)}}
+function cards(container,list){container.replaceChildren(...list.map(g=>gameCard(g,{votes,onFavourite:()=>{if(active==='Favourites')renderCollection()}})))}
+function filtered(){const fav=readStore('favourites',[]),recent=readStore('recent',[]);const list=games.filter(g=>(active==='All'||(active==='Favourites'?fav.includes(g.id):active==='Recent'?recent.includes(g.id):g.genres.includes(active)))&&(!query||(g.name+' '+g.genres.join(' ')).toLowerCase().includes(query)));return list.sort((a,b)=>order==='votes'?(votes[b.id]||0)-(votes[a.id]||0)||a.name.localeCompare(b.name):order==='za'?b.name.localeCompare(a.name):a.name.localeCompare(b.name))}
+function renderCollection(){const list=filtered();$('collectionTitle').textContent=active==='All'?'All games':active==='Favourites'?'Your favourites':active==='Recent'?'Recently played':active+' games';$('collectionEyebrow').textContent=query?'FIND YOUR NEXT FAVOURITE':active==='Favourites'?'SAVED ON THIS DEVICE':'THE COLLECTION';$('resultCount').textContent=`${list.length.toLocaleString()} ${list.length===1?'game':'games'}${query?' matching “'+query+'”':''} · showing ${Math.min(limit,list.length).toLocaleString()}`;cards($('gamesContainer'),list.slice(0,limit));$('emptyState').hidden=!!list.length;$('loadMore').hidden=list.length<=limit}
+function renderHome(){const picks=['eaglercraft-26-3','c6x-8-ball-pool','c6x-1v1-lol','c6x-slope','c6x-retro-bowl','c6x-drift-boss'];const selected=picks.map(id=>games.find(g=>g.id===id)).filter(Boolean);if(selected.length<6)selected.push(...games.filter(g=>g.image&&!selected.includes(g)).slice(0,6-selected.length));cards($('spotlightGames'),selected);const recent=readStore('recent',[]).map(id=>games.find(g=>g.id===id)).filter(Boolean).slice(0,6);cards($('recentGames'),recent);$('recentSection').hidden=!recent.length||active!=='All'||!!query}
+async function community(){try{const response=await fetch('/api/votes');if(!response.ok)throw new Error();const data=await response.json();if(!data.available)throw new Error();votes=data.votes||{};const ranked=games.filter(g=>votes[g.id]>0).sort((a,b)=>votes[b.id]-votes[a.id]||a.name.localeCompare(b.name)).slice(0,6);cards($('communityGames'),ranked);$('communityEmpty').hidden=!!ranked.length;$('communityMessage').textContent='Be the first to like a game. The most liked games will appear here.';$('communityLabel').textContent=ranked.length?'Ranked by real likes':'Be the first';renderCollection()}catch{$('communityEmpty').hidden=false;$('communityLabel').textContent='Voting not connected';$('communityEmptyTitle').textContent='A home for the community’s favourites.';$('communityMessage').textContent='Community voting is being set up. Save your own favourites with the heart on any game.'}}
+async function init(){try{$('loadError').hidden=true;games=await loadCatalogue();$('catalogueCount').textContent=games.length.toLocaleString()+' games to explore';renderNavigation();renderHome();renderCollection();if(active!=='All')navigate(active);community()}catch{$('loadError').hidden=false;$('catalogueCount').textContent='Collection unavailable'}}
+$('searchInput').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();limit=pageSize;renderCollection();const hide=!!query||active!=='All';$('communitySection').hidden=hide;$('spotlightSection').hidden=hide;$('recentSection').hidden=hide||!readStore('recent',[]).length});$('sortOrder').addEventListener('change',e=>{order=e.target.value;limit=pageSize;renderCollection()});$('loadMore').addEventListener('click',()=>{limit+=pageSize;renderCollection()});$('resetFilters').addEventListener('click',()=>{query='';$('searchInput').value='';navigate('All')});$('randomGame').addEventListener('click',()=>{const list=filtered();if(list.length)location.href='/play.html?id='+encodeURIComponent(list[Math.floor(Math.random()*list.length)].id);else toast('No games match these filters')});$('clearRecent').addEventListener('click',()=>{writeStore('recent',[]);renderHome();if(active==='Recent')renderCollection()});$('retryCatalogue').addEventListener('click',init);$('mobileMenu').addEventListener('click',()=>{const open=$('sidebar').classList.toggle('open');$('mobileMenu').setAttribute('aria-expanded',String(open))});document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('searchInput').focus()}});init();

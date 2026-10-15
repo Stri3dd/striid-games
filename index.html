@@ -1,25 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <link rel="stylesheet" href="config/main.css" />
-    <script src="config/main.js" type="module"></script>
-  </head>
-  <body>
-    <div class="center">
-      <h1 id="title"></h1>
-      <p id="subtitle"></p>
-    </div>
-    <div class="center">
-      <input type="text" id="searchInput" placeholder="Search games" />
-    </div>
-    <div id="gamesContainer"></div>
-    <div class="footer">
-      <a style="font-weight: 700">a site by
-      </a><a style="font-weight: 700" class="link" href="https://dsc.gg/parcoil">parcoil network</a>
-    </div>
-  </body>
-</html>
-
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101115"><meta name="description" content="Pick. Play. Repeat. Explore arcade, driving, puzzle, sports, sandbox games and more at STRIID Games."><title>STRIID Games — Pick. Play. Repeat.</title><link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/config/main.css"><script type="module" src="/config/main.js"></script></head><body>
+<a class="skip" href="#main">Skip to games</a><header class="site-header"><a class="brand" href="/" aria-label="STRIID Games home"><span class="brand-mark">S</span>STRIID<span>GAMES</span></a><span class="domain">games.striid.uk</span><div class="header-right"><span class="live-dot"></span> YOUR NEXT FAVOURITE IS HERE <button class="icon-button" id="mobileMenu" aria-label="Toggle categories" aria-expanded="false" data-icon="menu"></button></div></header>
+<div class="site-layout"><aside id="sidebar" class="sidebar"><p class="eyebrow">EXPLORE THE ARCADE</p><nav id="navigation" aria-label="Game categories"></nav><div class="sidebar-note"><span data-icon="gamepad"></span><strong>Pick. Play. Repeat.</strong><p>Big worlds. Quick rounds.<br>Something for every mood.</p></div></aside><main id="main">
+<section class="intro"><div><p class="eyebrow accent">THE GOOD STUFF, ALL HERE.</p><h1>Less scrolling.<br>More playing<span>.</span></h1><p class="intro-copy"><span id="catalogueCount">Loading the collection…</span> · No account needed.</p></div><div class="intro-tools"><label class="search"><span data-icon="search"></span><input id="searchInput" type="search" placeholder="Find your next game…" aria-label="Search games" autocomplete="off"><kbd>/</kbd></label><button class="button random-button" id="randomGame"><span data-icon="shuffle"></span> Surprise me <span data-icon="arrow-right"></span></button></div></section>
+<section id="communitySection" class="community-section"><div class="section-heading"><div><p class="eyebrow accent"><span data-icon="flame"></span> CHOSEN BY THE PLAYERS</p><h2>Community favourites</h2></div><span class="section-note" id="communityLabel">Player votes</span></div><div id="communityGames" class="game-grid featured-grid"></div><div class="community-empty" id="communityEmpty" hidden><span data-icon="heart"></span><div><strong id="communityEmptyTitle">Your favourites start something.</strong><p id="communityMessage">Loading community votes…</p></div><a href="#collection" class="text-link">Explore games <span data-icon="arrow-right"></span></a></div></section>
+<section id="spotlightSection"><div class="section-heading"><h2><span data-icon="sparkles"></span> Start with these</h2><span class="section-note">A few picks to get you going</span></div><div id="spotlightGames" class="game-grid featured-grid"></div></section>
+<section id="recentSection" hidden><div class="section-heading"><h2><span data-icon="history"></span> Jump back in</h2><button class="text-link" id="clearRecent">Clear recent</button></div><div id="recentGames" class="game-grid featured-grid"></div></section>
+<section id="collection"><div class="section-heading collection-heading"><div><p class="eyebrow" id="collectionEyebrow">A LITTLE BIT OF EVERYTHING</p><h2 id="collectionTitle">All games</h2></div><label class="sort-label"><span data-icon="sort"></span><select id="sortOrder" aria-label="Sort games"><option value="az">A–Z</option><option value="za">Z–A</option><option value="votes">Most liked</option></select></label></div><div id="genreChips" class="genre-chips" aria-label="Filter genres"></div><p id="resultCount" class="results" aria-live="polite"></p><div id="gamesContainer" class="game-grid"></div><div id="emptyState" class="empty-state" hidden><span data-icon="search"></span><h3>No games found</h3><p>Try another name or explore a different genre.</p><button id="resetFilters" class="button">Show all games</button></div><div class="load-more"><button id="loadMore" class="button" hidden><span data-icon="plus"></span> Load more games</button></div><p id="loadError" class="error" role="alert" hidden>We couldn’t load the collection. <button id="retryCatalogue" class="text-link">Try again</button></p></section>
+<footer><a class="brand footer-brand" href="/">STRIID<span>GAMES</span></a><span>Pick. Play. Repeat.</span><span>Template: <a href="https://parcoil.dev" target="_blank" rel="noopener noreferrer">Parcoil Network</a> · Catalogue: <a href="https://sites.google.com/view/classroom6x/" target="_blank" rel="noopener noreferrer">Classroom 6x</a></span><a href="/about.html">About &amp; game sources</a></footer></main></div><div id="toast" class="toast" role="status" hidden></div><noscript><p class="noscript">Enable JavaScript to browse and play the games.</p></noscript></body></html>
